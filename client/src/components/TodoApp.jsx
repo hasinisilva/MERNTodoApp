@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import TodoForm from './TodoForm';
-import TodoHero from './TodoHero';
 import TodoList from './TodoList';
 import TodoHeader from './TodoHeader';
 import { getTodos } from '../../../server/services/todoService';

@@ -1,13 +1,10 @@
-import { useState } from 'react';
-import { getTodos, createTodo } from '../../../server/services/todoService';;
-
+import { useState } from "react";
+import { createTodo } from "../../../server/services/todoService";
+import '../styles/todoForm.css';
 
 export default function TodoForm({ onTodoAdded }) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [todos, setTodos] = useState([]);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,53 +12,43 @@ export default function TodoForm({ onTodoAdded }) {
     if (!title.trim()) return;
 
     try {
-      // 3. Push data using the centralized method
-      const savedTodo = await createTodo({ 
-        title: title, 
-        description: description, 
-        done: false 
-      }).then(() => {
-        setTitle('');
-        setDescription('');
-        fetchTodoList();
+      const savedTodo = await createTodo({
+        title: title,
+        description: description,
+        done: false,
+      }).then(async () => {
+        setTitle("");
+        setDescription("");
       });
-
-      if (onTodoAdded) onTodoAdded(savedTodo); // Refresh your list or state
+      if (onTodoAdded) onTodoAdded(savedTodo); // Refresh list or state
     } catch (err) {
       console.error(err.message);
     }
   };
 
-    const fetchTodoList = async () => {
-        try {
-          const data = await getTodos();
-          setTodos(data);
-        } catch (err) {
-          console.error('Error fetching todos:', err);
-        } finally {
-          //setLoading(false);
-        }
-      };
-
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Add a new task..."
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          disabled={isSubmitting} // Lock input during saving
+      <form onSubmit={handleSubmit} className="todo-form">
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="todo-input"
           />
-        <input
-          type="text"
-          placeholder="Add a new task..."
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          disabled={isSubmitting} // Lock input during saving
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="todo-input"
           />
-        <button type="submit" disabled={isSubmitting} className="todo-button">
-          {isSubmitting ? 'Saving...' : 'Add Task'}
+        </div>
+        <button type="submit" className="todo-button" disabled={!title}>
+          Add Task
         </button>
       </form>
     </>

@@ -1,0 +1,79 @@
+.table-container {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 20px auto;
+  overflow-x: auto;
+  font-family: sans-serif;
+}
+
+.todo-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.todo-table th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 14px 16px;
+  border-bottom: 2px solid #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.todo-table td {
+  padding: 14px 16px;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+/* Row hover effect */
+.todo-table tbody tr {
+  transition: background-color 0.15s ease-in-out;
+}
+
+.todo-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Completed task styling */
+.todo-row-done {
+  background-color: #f8fafc;
+}
+
+.todo-title-done {
+  text-decoration: line-through;
+  color: #94a3b8 !important;
+}
+
+.todo-desc {
+  color: #64748b;
+}
+
+/* Action buttons styling inside table */
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  vertical-align: middle;
+}
+
+.action-btn:hover {
+  background-color: #e2e8f0;
+}
+
+.empty-state {
+  text-align: center;
+  color: #64748b;
+  padding: 30px;
+  font-style: italic;
+}

@@ -25,7 +25,6 @@ export const createTodo = async (todoData) => {
   return await response.json();
 };
 
-// Reusable service function for toggling a todo's done status
 export const toggleTodoDone = async (id) => {
   const response = await fetch(`${API_URL}/${id}/done`, {
     method: 'PATCH',
@@ -35,5 +34,21 @@ export const toggleTodoDone = async (id) => {
     throw new Error('Failed to update todo status');
   }
 
+  return await response.json();
+};
+
+export const updateTodo = async (id, updateData) => {
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updateData),
+  });
+  if (!response.ok) throw new Error('Failed to update todo');
+  return await response.json();
+};
+
+export const deleteTodo = async (id) => {
+  const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+  if (!response.ok) throw new Error('Failed to delete todo');
   return await response.json();
 };
