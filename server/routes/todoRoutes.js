@@ -1,50 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const Todo = require('../models/Todo');
+const { getAllTodos, createTodo, updateTodo, toggleTodoDone, deleteTodo } = require('../controllers/todoController');
 
-// GET: Fetch all todos
-router.get('/', async (req, res) => {
-  try {
-    const todos = await Todo.find().sort({ createdAt: -1 });
-    res.json(todos);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// GET /api/todos: Fetch and return all TODO documents
+router.get('/', getAllTodos);
 
-// POST: Create a new todo
-router.post('/', async (req, res) => {
-  try {
-    const newTodo = new Todo({ text: req.body.text });
-    const savedTodo = await newTodo.save();
-    res.status(201).json(savedTodo);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+// POST /api/todos: Validate request data and create a new TODO document
+router.post('/', createTodo);
 
-// PUT: Update a todo (toggle completion or edit text)
-router.put('/:id', async (req, res) => {
-  try {
-    const updatedTodo = await Todo.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-    res.json(updatedTodo);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+// PUT /api/todos/:id: Find a TODO by ID and update its title and/or description
+router.put('/:id', updateTodo);
 
-// DELETE: Remove a todo
-router.delete('/:id', async (req, res) => {
-  try {
-    await Todo.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Todo deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// PATCH /api/todos/:id/done: Toggle the done status of a specific TODO
+router.patch('/:id/done', toggleTodoDone);
+
+// DELETE /api/todos/:id: Remove a TODO document by its ID
+router.delete('/:id', deleteTodo);
 
 module.exports = router;
