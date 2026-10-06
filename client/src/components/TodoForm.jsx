@@ -1,63 +1,69 @@
 import { useState } from 'react';
+import { getTodos, createTodo } from '../../../server/services/todoService';;
+
 
 export default function TodoForm({ onTodoAdded }) {
-  const [value, setValue] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [todos, setTodos] = useState([]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // 1. Prevent empty submissions
-    if (!value.trim()) return;
 
-    // 2. Set loading state to prevent double-clicks
-    setIsSubmitting(true);
+    if (!title.trim()) return;
 
     try {
-        console.log('value', value)
-      // 3. Push data directly to your NodeJS/MongoDB API
-      const response = await fetch('http://localhost:5000/api/todos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: value })
+      // 3. Push data using the centralized method
+      const savedTodo = await createTodo({ 
+        title: title, 
+        description: description, 
+        done: false 
+      }).then(() => {
+        setTitle('');
+        setDescription('');
+        fetchTodoList();
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to save to database');
-      }
-
-      // 4. Parse the saved document returned from MongoDB
-      const savedTodo = await response.json();
-      
-      // 5. Tell the parent UI to add this new item to the active screen list
-    //   if (onTodoAdded) {
-    //     onTodoAdded(savedTodo);
-    //   }
-
-      // 6. Clear input field on success
-      setValue('');
+      if (onTodoAdded) onTodoAdded(savedTodo); // Refresh your list or state
     } catch (err) {
-      console.error('Error adding to MongoDB:', err);
-      alert('Could not save task. Please try again.');
-    } finally {
-      // 7. Reset loading state
-      setIsSubmitting(false);
+      console.error(err.message);
     }
   };
 
+    const fetchTodoList = async () => {
+        try {
+          const data = await getTodos();
+          setTodos(data);
+        } catch (err) {
+          console.error('Error fetching todos:', err);
+        } finally {
+          //setLoading(false);
+        }
+      };
+
   return (
-    <form onSubmit={handleSubmit} className="todo-form">
-      <input
-        type="text"
-        placeholder="Add a new task..."
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        disabled={isSubmitting} // Lock input during saving
-        className="todo-input"
-      />
-      <button type="submit" disabled={isSubmitting} className="todo-button">
-        {isSubmitting ? 'Saving...' : 'Add Task'}
-      </button>
-    </form>
+    <>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Add a new task..."
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          disabled={isSubmitting} // Lock input during saving
+          />
+        <input
+          type="text"
+          placeholder="Add a new task..."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          disabled={isSubmitting} // Lock input during saving
+          />
+        <button type="submit" disabled={isSubmitting} className="todo-button">
+          {isSubmitting ? 'Saving...' : 'Add Task'}
+        </button>
+      </form>
+    </>
   );
 }

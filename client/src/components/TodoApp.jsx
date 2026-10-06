@@ -3,16 +3,25 @@ import TodoForm from './TodoForm';
 import TodoHero from './TodoHero';
 import TodoList from './TodoList';
 import TodoHeader from './TodoHeader';
+import { getTodos } from '../../../server/services/todoService';
 
 function TodoApp() {
     const [todos, setTodos] = useState([]);
 
     // Access/Get data from MongoDB when page loads
     useEffect(() => {
-        fetch('http://localhost:5000/api/todos')
-        .then((res) => res.json())
-        .then((data) => setTodos(data))
-        .catch((err) => console.error(err));
+      const fetchTodoList = async () => {
+        try {
+          const data = await getTodos();
+          setTodos(data);
+        } catch (err) {
+          console.error('Error fetching todos:', err);
+        } finally {
+          //setLoading(false);
+        }
+      };
+
+      fetchTodoList();
     }, []);
 
     // Updates screen state after database changes
@@ -24,8 +33,7 @@ function TodoApp() {
         <div>
             <TodoHeader />
             <TodoForm onTodoAdded={handleNewTodo} />
-            <TodoHero />
-            <TodoList />
+            <TodoList todos={todos} />
         </div>
     )
 }
