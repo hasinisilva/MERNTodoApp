@@ -26,8 +26,7 @@ export default function TodoForm({ onTodoAdded }) {
     }
   };
 
-  return (
-    <>
+  return (<>
       <form onSubmit={handleSubmit} className="todo-form">
         <div className="form-group">
           <input

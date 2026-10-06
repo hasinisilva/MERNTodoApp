@@ -5,7 +5,8 @@ import {
   updateTodo,
   deleteTodo,
 } from "../../../server/services/todoService";
-import '../styles/todoList.css';
+import "../styles/todoList.css";
+import LoadingSpinner from "./LoadingSpinner";
 
 function TodoList({ todos }) {
   const [completed, setCompleted] = useState([]);
@@ -14,6 +15,7 @@ function TodoList({ todos }) {
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // Handler utilizing the reusable service method
   const handleToggleDone = async (id) => {
@@ -34,7 +36,7 @@ function TodoList({ todos }) {
     } catch (err) {
       console.error("Error fetching todos:", err);
     } finally {
-      //setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -76,11 +78,11 @@ function TodoList({ todos }) {
     setEditingId(null);
   };
 
-  return (
+  return loading ? (
+    <LoadingSpinner />
+  ) : (
     <div className="table-container">
-      <table
-        className="todo-table"
-      >
+      <table className="todo-table">
         <thead>
           <tr
             style={{
@@ -88,10 +90,10 @@ function TodoList({ todos }) {
               borderBottom: "2px solid #ddd",
             }}
           >
-            <th style={{ width: '50px', textAlign: 'center' }}></th>
+            <th style={{ width: "50px", textAlign: "center" }}></th>
             <th style={{ padding: "12px" }}>Title</th>
             <th style={{ padding: "12px" }}>Description</th>
-            <th style={{ width: '120px' }}>Action</th>
+            <th style={{ width: "120px" }}>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -102,7 +104,7 @@ function TodoList({ todos }) {
             return (
               <tr
                 key={todoId}
-                className={todo.done ? 'todo-row-done' : ''}
+                className={todo.done ? "todo-row-done" : ""}
                 aria-disabled={!!todo.done}
               >
                 {/* Checkbox Section */}
@@ -113,7 +115,7 @@ function TodoList({ todos }) {
                     onChange={() =>
                       handleToggleDone && handleToggleDone(todoId)
                     }
-                    style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+                    style={{ cursor: "pointer", width: "18px", height: "18px" }}
                   />
                 </td>
                 {/* Title (with strike-through effect if done) */}
@@ -123,7 +125,13 @@ function TodoList({ todos }) {
                       type="text"
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
-                      style={{ padding: '6px', fontSize: '14px', width: '90%', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                      style={{
+                        padding: "6px",
+                        fontSize: "14px",
+                        width: "90%",
+                        borderRadius: "4px",
+                        border: "1px solid #cbd5e1",
+                      }}
                     />
                   ) : (
                     <span
@@ -144,7 +152,13 @@ function TodoList({ todos }) {
                       type="text"
                       value={editDescription}
                       onChange={(e) => setEditDescription(e.target.value)}
-                      style={{ padding: '6px', fontSize: '14px', width: '90%', borderRadius: '4px', border: '1px solid #cbd5e1' }}
+                      style={{
+                        padding: "6px",
+                        fontSize: "14px",
+                        width: "90%",
+                        borderRadius: "4px",
+                        border: "1px solid #cbd5e1",
+                      }}
                     />
                   ) : (
                     <span
